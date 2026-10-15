@@ -24,5 +24,9 @@ jobs:
 
     - name: Build
       run: |
-        npm install
-        npx webpack
+        # Use a deterministic install when package-lock.json exists, fall back to npm install
+        if [ -f package-lock.json ]; then npm ci; else npm install; fi
+        # Ensure webpack-cli is available in CI so npx won't prompt interactively
+        npm install --no-audit --no-fund --save-dev webpack-cli
+        # Run webpack in production mode
+        npx webpack --mode production
