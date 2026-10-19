@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+﻿name: NodeJS with Webpack
 
 on:
   push:
@@ -28,5 +28,9 @@ jobs:
         if [ -f package-lock.json ]; then npm ci; else npm install; fi
         # Ensure webpack-cli is available in CI so npx won't prompt interactively
         npm install --no-audit --no-fund --save-dev webpack-cli
-        # Run webpack in production mode
-        npx webpack --mode production
+        # Prefer running project's build script if present, otherwise fall back to npx webpack
+        if npm run --silent | grep -q "build"; then
+          npm run build
+        else
+          npx webpack --mode production
+        fi
